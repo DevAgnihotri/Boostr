@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Bounce } from 'react-toastify';
 import { useRouter } from 'next/navigation'
 import { notFound } from "next/navigation"
+import Image from 'next/image'
 
 const PaymentPage = ({ username }) => {
     // const { data: session } = useSession()
@@ -21,6 +22,7 @@ const PaymentPage = ({ username }) => {
 
     useEffect(() => {
         getData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
@@ -39,6 +41,7 @@ const PaymentPage = ({ username }) => {
         }
         router.push(`/${username}`)
      
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     
 
@@ -55,35 +58,37 @@ const PaymentPage = ({ username }) => {
 
 
     const pay = async (amount) => {
-        // Get the order Id 
-        let a = await initiate(amount, username, paymentform)
-        let orderId = a.id
-        var options = {
-            "key": currentUser.razorpayid, // Enter the Key ID generated from the Dashboard
-            "amount": amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-            "currency": "INR",
-            "name": "Get Me A Chai", //your business name
-            "description": "Test Transaction",
-            "image": "https://example.com/your_logo",
-            "order_id": orderId, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-            "callback_url": `${process.env.NEXT_PUBLIC_URL}/api/razorpay`,
-            "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
-                "name": "Gaurav Kumar", //your customer's name
-                "email": "gaurav.kumar@example.com",
-                "contact": "9000090000" //Provide the customer's phone number for better conversion rates 
-            },
-            "notes": {
-                "address": "Razorpay Corporate Office"
-            },
-            "theme": {
-                "color": "#3399cc"
-            }
+        // Validate that name and message are provided
+        if (!paymentform.name || paymentform.name.length < 3) {
+            toast.error('Please enter your name (at least 3 characters)')
+            return
+        }
+        if (!paymentform.message || paymentform.message.length < 4) {
+            toast.error('Please enter a message (at least 4 characters)')
+            return
         }
 
-        var rzp1 = new Razorpay(options);
-        rzp1.open();
-    }
+        // Create a PhonePe-style order on the server and get a payment URL
+        try {
+            const a = await initiate(amount, username, paymentform)
+            if (!a) {
+                toast.error('Failed to create payment order')
+                return
+            }
 
+            const paymentUrl = a.paymentUrl || a.url
+            if (!paymentUrl) {
+                toast.error(a.message || 'No payment URL returned')
+                return
+            }
+
+            // Redirect to simulated PhonePe checkout
+            window.location.href = paymentUrl
+        } catch (err) {
+            console.error('Payment initiation failed', err)
+            toast.error('Payment initiation failed')
+        }
+    }
     
     return (
         <>
@@ -100,13 +105,12 @@ const PaymentPage = ({ username }) => {
                 theme="light" />
             {/* Same as */}
             <ToastContainer />
-            <Script src="https://checkout.razorpay.com/v1/checkout.js"></Script>
 
 
             <div className='cover w-full bg-red-50 relative'>
-                <img className='object-cover w-full h-48 md:h-[350px] shadow-blue-700 shadow-sm' src={currentUser.coverpic} alt="" />
+                <Image className='object-cover w-full h-48 md:h-[350px] shadow-blue-700 shadow-sm' src={currentUser.coverpic || '/default-cover.jpg'} alt="cover" width={1200} height={350} />
                 <div className='absolute -bottom-20 right-[33%] md:right-[46%] border-white overflow-hidden border-2 rounded-full size-36'>
-                    <img className='rounded-full object-cover size-36' width={128} height={128} src={currentUser.profilepic} alt="" />
+                    <Image className='rounded-full object-cover size-36' width={128} height={128} src={currentUser.profilepic || '/avatar.gif'} alt="profile" />
                 </div>
             </div>
             <div className="info flex justify-center items-center my-24 mb-32 flex-col gap-2">
@@ -130,7 +134,7 @@ const PaymentPage = ({ username }) => {
                             {payments.length == 0 && <li>No payments yet</li>}
                             {payments.map((p, i) => {
                                 return <li key={i} className='my-4 flex gap-2 items-center'>
-                                    <img width={33} src="avatar.gif" alt="user avatar" />
+                                    <Image width={33} height={33} src="/avatar.gif" alt="user avatar" />
                                     <span>
                                         {p.name} donated <span className='font-bold'>₹{p.amount}</span> with a message &quot;{p.message}&quot;
                                     </span>

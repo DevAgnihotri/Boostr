@@ -1,6 +1,5 @@
 "use server"
 
-import Razorpay from "razorpay"
 import Payment from "@/models/Payment"
 import connectDb from "@/db/connectDb"
 import User from "@/models/User"
@@ -10,40 +9,26 @@ export const initiate = async (amount, to_username, paymentform) => {
     await connectDb()
     // fetch the secret of the user who is getting the payment 
     let user = await User.findOne({username: to_username})
-    const secret = user?.razorpaysecret
+    // For PhonePe flow: create a local order record and return a simulated payment URL.
+    // This avoids calling external APIs and lets the frontend redirect to a server route
+    // that simulates PhonePe behavior for testing.
 
-    // Validate Razorpay credentials exist for the receiver
-    if (!user || !user.razorpayid || !secret) {
-        // Return a structured error instead of rejecting with a raw object
-        return { error: true, message: "Receiver has not configured Razorpay credentials" }
-    }
+    const orderId = `phonepe_${Date.now()}`
 
-    var instance = new Razorpay({ key_id: user.razorpayid, key_secret: secret })
-
-    let options = {
+    // amount is expected in paise from the client (same as previous behavior)
+    const order = {
+        id: orderId,
         amount: Number.parseInt(amount),
-        currency: "INR",
+        currency: 'INR',
+        to_user: to_username,
     }
 
-    try {
-        let x = await instance.orders.create(options)
+    // create a payment object which shows a pending payment in the database
+    await Payment.create({ oid: order.id, amount: order.amount / 100, to_user: to_username, name: paymentform.name, message: paymentform.message, done: false })
 
-        // create a payment object which shows a pending payment in the database
-        await Payment.create({ oid: x.id, amount: amount/100, to_user: to_username, name: paymentform.name, message: paymentform.message })
-
-        return x
-    } catch (err) {
-        // Normalize the error so the caller receives a plain Error or structured object
-        console.error('Razorpay order creation failed:', err)
-
-        // If Razorpay returned an object response, include useful details
-        if (err && typeof err === 'object') {
-            const message = err.error?.description || err.message || JSON.stringify(err)
-            return { error: true, statusCode: err.statusCode || 500, message }
-        }
-
-        return { error: true, statusCode: 500, message: 'Unknown error creating Razorpay order' }
-    }
+    // Return a simulated checkout URL that points to our new /api/phonepe route
+    const paymentUrl = `${process.env.NEXT_PUBLIC_URL}/api/phonepe?orderId=${order.id}`
+    return { id: order.id, paymentUrl }
 
 }
 
