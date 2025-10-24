@@ -1,73 +1,75 @@
-How to get your GitHub OAuth Client ID and Client Secret
 
-This file shows the exact steps to create a GitHub OAuth (OAuth App) and where to put the values in your Next.js project.
+### 🧠 Prompt for Claude
 
-1. Decide callback (redirect) URL for your app
-
-- For local development using the default Next.js port use:
-  - http://localhost:3000/api/auth/callback/github
-- If you're deploying, set it to your site URL, e.g.:
-  - https://your-domain.com/api/auth/callback/github
-- This project uses NextAuth at `app/api/auth/[...nextauth]/route.js`, so the callback URL above is correct for the GitHub provider.
-
-2. Create an OAuth App on GitHub
-
-- Open: https://github.com/settings/developers
-- Click "OAuth Apps" (left sidebar)
-- Click "New OAuth App"
-- Fill the form:
-  - Application name: (e.g. "My Next.js App")
-  - Homepage URL: https://your-domain.com (or http://localhost:3000 for dev)
-  - Application description: optional
-  - Authorization callback URL: <the callback URL from step 1> (e.g. http://localhost:3000/api/auth/callback/github)
-- Click "Register application"
-
-3. Copy the credentials
-
-- After registering you will see:
-  - Client ID (visible immediately)
-  - Client Secret (click "Generate a new client secret" if none or if you need a new one)
-- Copy both values. Treat the Client Secret like a password — do NOT commit it to source control.
-
-4. Add them to your project environment
-
-- Create a file named `.env.local` in the project root (this file is for local-only secrets and should be in `.gitignore`). Example contents:
-
-GITHUB_ID=your_client_id_here
-GITHUB_SECRET=your_client_secret_here
-NEXT_PUBLIC_URL=http://localhost:3000
-MONGO_URI=mongodb://<username>:<password>@host:port/dbname
-
-# other keys used by this project (example):
-
-# RAZORPAY_KEY=...
-
-# RAZORPAY_SECRET=...
-
-- Restart your dev server after adding or changing `.env.local` so the new env vars are loaded.
-
-5. Security & best practices
-
-- Never commit `.env.local` to git. Make sure `.gitignore` contains it.
-- For deployed environments (Vercel, Netlify, Heroku, etc.) set `GITHUB_ID` and `GITHUB_SECRET` in the host's environment/config panel — do NOT put them into the repo.
-- Rotate the client secret if it ever leaks: GitHub allows you to regenerate it.
-
-6. Testing the connection
-
-- Start your dev server:
-  - npm run dev
-- Visit your app and click "Sign in with GitHub". You should be redirected to GitHub to authorize and then back to your app with a session if successful.
-
-7. Troubleshooting
-
-- "Invalid redirect_uri" error: check the Authorization callback URL on GitHub exactly matches the URL used by NextAuth (including http/https and trailing slashes).
-- Missing credentials error: ensure `.env.local` exists, variables are spelled `GITHUB_ID` and `GITHUB_SECRET`, and server was restarted.
-- If you see provider configuration errors in Next.js server logs, paste the error message into a search or here and I can help debug.
-
-If you want, I can:
-
-- Add a small dev-only guard to `app/api/auth/[...nextauth]/route.js` so the GitHub provider is only registered when both env vars are present.
-- Create a `.env.local.example` with all recommended env keys.
-- Walk through creating the OAuth app in real-time while you share screens/logs.
-
-End of instructions.
+> **Prompt Title:** Design a Luxury Landing Page for BOOSTR
+>
+> You are designing the **landing page layout, copy tone, and visual direction** for a **luxury creator support platform** called **BOOSTR**.
+> BOOSTR is like *Patreon for elite creators*, blending **Louis Vuitton–level luxury** with **modern creator empowerment**.
+>
+> ---
+>
+> ### 🏷️ Brand Overview
+>
+> **Name:** BOOSTR
+> **Tagline:** “For the Few Who Create More.”
+> **Audience:** Elite creators — photographers, designers, musicians, and creative entrepreneurs who view their art as high-value.
+> **Goal:** Make creators *apply to join*. The “Apply as a Creator” CTA leads to login/signup.
+> **Aesthetic:** Minimalist luxury with a red, black, and white palette. Sharp contrast. Spacious. High-end typography.
+> **Mood:** Power, exclusivity, artistry, ambition.
+> **Tone:** Sophisticated, confident, aspirational.
+>
+> ---
+>
+> ### 🎨 Design Direction
+> * Overall layout should feel **cinematic and story-driven**, not a modular SaaS page.
+> * Each scroll section should *reveal* BOOSTR’s world — use luxury brand pacing and rhythm.
+> * Use **motion subtly** (fade-ins, parallax, slow zoom) to build drama.
+> * Hero section: full-bleed visuals, powerful tagline centered, with a small “Apply as a Creator” button below.
+> * Typography: bold sans-serif headlines, thin-serif body text (mix of power and grace).
+> * Visual elements: abstract gradients in red/black, glass reflections, or monochrome imagery of creators.
+> * Keep content minimal but impactful — like how luxury brands use fewer words, more emotion.
+>
+> ---
+>
+> ### 🧩 Section Flow (example)
+>
+> 1. **Hero:**
+>    “For the Few Who Create More.”
+>    → background video or motion image of creators at work (in studio, stage, design lab).
+>    → CTA: “Apply as a Creator.”
+>
+> 2. **Philosophy:**
+>    A single sentence on-screen at a time.
+>    “Not everyone gets to create. Not everyone gets to be seen. BOOSTR is where art earns its power.”
+>
+> 3. **Creators in Focus:**
+>    Showcase 3–4 sample creators as “portraits of ambition.” Minimal descriptions, clean grid with black-and-white images and red accent hover effect.
+>
+> 4. **The Experience:**
+>    Explain BOOSTR’s difference — exclusive access, better funding terms, private community. Minimal copy, elegant visuals.
+>
+> 5. **Join Section:**
+>    “You don’t apply to fit in. You apply to stand out.”
+>    → “Apply as a Creator” button.
+>
+> 6. **Footer:**
+>    Small, centered logo. No clutter. Just socials, copyright, and a whisper of luxury.
+>
+> ---
+>
+> ### 💡 Output format
+>
+> * Provide:
+>
+>   * Detailed **wireframe** or **section-by-section breakdown**
+>   * Suggested **microcopy** for key sections
+>   * Optional **visual inspiration keywords** (for mockups)
+> * The tone should match a **fashion campaign**, not a SaaS ad.
+>
+> ---
+>
+> ### Reminder
+>
+> BOOSTR is not about access for everyone. It’s about *earning entry*.
+> Make visitors *feel they’ve entered a world of rare creators*.
+> Every pixel should breathe exclusivity and ambition.

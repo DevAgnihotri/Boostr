@@ -2,95 +2,111 @@ import React from 'react';
 
 const About = () => {
     return (
-        <div className="container mx-auto px-8 md:px-4 py-8">
-            <h1 className="text-3xl font-semibold mb-4">About Get Me a Chai</h1>
-            <p className="text-lg mb-6">
-                Get Me a Chai is a crowdfunding platform designed for creators to fund their projects with the support of their fans. It&apos;s a space where your fans can directly contribute to your creative endeavors by buying you a chai. Unlock the potential of your fanbase and bring your projects to life.
-            </p>
+        <div className="min-h-screen bg-black text-white">
+                <div className="max-w-6xl mx-auto px-6 md:px-8 py-20">
+                    {/* Hero / Lead */}
+                    <div className="max-w-4xl mx-auto text-center mb-12">
+                        <h1 className="text-6xl md:text-7xl font-thin mb-4 tracking-wider">About <span className="text-red-600">BOOSTR</span></h1>
+                        <div className="mx-auto w-24 h-0.5 bg-red-600 mb-6 opacity-90"></div>
+                        <p className="text-lg md:text-xl font-extralight mb-6 leading-relaxed">
+                            BOOSTR is an invitation-only platform built for exceptional creators — a place where patrons directly support meaningful work. We help creators monetize attention, deepen relationships with supporters, and realize ambitious projects with elegant simplicity.
+                        </p>
+                        <blockquote className="border-l-4 border-red-600 pl-6 italic font-light text-slate-400 mx-auto max-w-3xl">
+                            We don&apos;t build for everyone. We build for those who make the world worth looking at.
+                        </blockquote>
+                    </div>
 
-            <h2 className="text-2xl font-semibold mb-4">How It Works</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                <div className="flex items-center mb-6">
-                    <img className="w-20 h-20 rounded-full mr-4" src="/group.gif" alt="Fans Want to Collaborate" />
-                    <div>
-                        <h3 className="text-xl font-semibold mb-2">Fans Want to Collaborate</h3>
-                        <p>Your fans are enthusiastic about collaborating with you on your projects.</p>
-                    </div>
+                    {/* How it works - numbered steps */}
+                    <section className="mb-16">
+                        <h2 className="text-4xl font-light mb-8 tracking-wide border-l-4 border-red-600 pl-6">How it Works</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl">
+                            <div className="flex gap-4 items-start">
+                                <div className="w-12 h-12 rounded-full bg-red-600 flex items-center justify-center text-white font-thin">1</div>
+                                <div>
+                                    <h3 className="text-2xl font-light mb-2 tracking-wide">Gather a Devoted Audience</h3>
+                                    <p className="font-extralight text-slate-400">Grow a small, engaged audience that truly cares about your work — quality over quantity.</p>
+                                </div>
+                            </div>
+
+                            <div className="flex gap-4 items-start">
+                                <div className="w-12 h-12 rounded-full bg-red-600 flex items-center justify-center text-white font-thin">2</div>
+                                <div>
+                                    <h3 className="text-2xl font-light mb-2 tracking-wide">Offer Support Options</h3>
+                                    <p className="font-extralight text-slate-400">Create simple, elegant ways for fans to support you — one-time contributions, subscriptions, or project-backed pledges.</p>
+                                </div>
+                            </div>
+
+                            <div className="flex gap-4 items-start">
+                                <div className="w-12 h-12 rounded-full bg-red-600 flex items-center justify-center text-white font-thin">3</div>
+                                <div>
+                                    <h3 className="text-2xl font-light mb-2 tracking-wide">Deliver Exclusive Value</h3>
+                                    <p className="font-extralight text-slate-400">Provide behind-the-scenes access, early work, or curated rewards that make supporters feel part of the process.</p>
+                                </div>
+                            </div>
+
+                            <div className="flex gap-4 items-start">
+                                <div className="w-12 h-12 rounded-full bg-red-600 flex items-center justify-center text-white font-thin">4</div>
+                                <div>
+                                    <h3 className="text-2xl font-light mb-2 tracking-wide">Scale With Intention</h3>
+                                    <p className="font-extralight text-slate-400">Use real support to fund bigger ideas while staying true to your craft and community.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Two-column features for creators & supporters */}
+                    <section className="mb-16">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-6xl">
+                            <div>
+                                <h2 className="text-3xl font-light mb-6 tracking-wide border-l-4 border-red-600 pl-6">For Creators</h2>
+                                <div className="space-y-4">
+                                    <div className="p-4 border border-red-950 rounded-sm bg-black hover:border-red-600 transition-colors">
+                                        <p className="font-extralight text-lg">Direct financial support and predictable revenue from your most loyal fans.</p>
+                                    </div>
+                                    <div className="p-4 border border-red-950 rounded-sm bg-black hover:border-red-600 transition-colors">
+                                        <p className="font-extralight text-lg">Exclusive tools to engage deeply — messages, limited releases, and collaborator access.</p>
+                                    </div>
+                                    <div className="p-4 border border-red-950 rounded-sm bg-black hover:border-red-600 transition-colors">
+                                        <p className="font-extralight text-lg">A curated environment for <span className="text-red-600">elite</span> projects and meaningful growth.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h2 className="text-3xl font-light mb-6 tracking-wide border-l-4 border-red-600 pl-6">For Supporters</h2>
+                                <div className="space-y-4">
+                                    <div className="p-4 border border-red-950 rounded-sm bg-black hover:border-red-600 transition-colors">
+                                        <p className="font-extralight text-lg">Be part of the creative journey and unlock exclusive rewards.</p>
+                                    </div>
+                                    <div className="p-4 border border-red-950 rounded-sm bg-black hover:border-red-600 transition-colors">
+                                        <p className="font-extralight text-lg">Directly impact the ideas you care about — no middlemen, just meaningful support.</p>
+                                    </div>
+                                    <div className="p-4 border border-red-950 rounded-sm bg-black hover:border-red-600 transition-colors">
+                                        <p className="font-extralight text-lg">Access to intimate events, early releases, and creator recognition.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* BOOSTR Difference */}
+                    <section className="mb-8 max-w-4xl">
+                        <h2 className="text-4xl font-light mb-6 tracking-wide border-l-4 border-red-600 pl-6">The BOOSTR Difference</h2>
+                        <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <li className="font-extralight text-lg border-l border-red-950 pl-6 py-2 hover:border-red-600 transition-colors">Curated community of <span className="text-red-600">ambitious</span> creators</li>
+                            <li className="font-extralight text-lg border-l border-red-950 pl-6 py-2 hover:border-red-600 transition-colors">Premium guidance from experienced mentors</li>
+                            <li className="font-extralight text-lg border-l border-red-950 pl-6 py-2 hover:border-red-600 transition-colors">Global reach and <span className="text-red-600">recognition</span> for outstanding work</li>
+                            <li className="font-extralight text-lg border-l border-red-950 pl-6 py-2 hover:border-red-600 transition-colors">Exclusive events and collaboration opportunities</li>
+                        </ul>
+                    </section>
                 </div>
-                <div className="flex items-center mb-6">
-                    <img className="w-20 h-20 rounded-full mr-4" src="/coin.gif" alt="Support Through Chai" />
-                    <div>
-                        <h3 className="text-xl font-semibold mb-2">Support Through Chai</h3>
-                        <p>Receive support from your fans in the form of chai purchases, directly contributing to your project funding.</p>
-                    </div>
-                </div>
-                {/* Add more steps as needed */}
             </div>
-
-            <h2 className="text-2xl font-semibold mb-4">Benefits for Creators</h2>
-            <ul className="list-disc pl-6 mb-6">
-                <li className="mb-2">Direct financial support from your fanbase</li>
-                <li className="mb-2">Engage with your fans on a more personal level</li>
-                <li className="mb-2">Access to a platform tailored for creative projects</li>
-                {/* Add more benefits */}
-            </ul>
-
-            <h2 className="text-2xl font-semibold mb-4">Benefits for Fans</h2>
-            <ul className="list-disc pl-6 mb-6">
-                <li className="mb-2">Directly contribute to the success of your favorite creators</li>
-                <li className="mb-2">Exclusive rewards and perks for supporting creators</li>
-                <li className="mb-2">Be part of the creative process and connect with creators</li>
-                {/* Add more benefits */}
-            </ul>
-
-            {/* Additional sections */}
-            <h2 className="text-2xl font-semibold mb-4">Benefits of Collaboration</h2>
-            <ul className="list-disc pl-6 mb-6">
-                <li className="mb-2">Unlock new opportunities through collaboration with fellow creators</li>
-                <li className="mb-2">Expand your network and reach a wider audience</li>
-                <li className="mb-2">Combine skills and resources to create innovative projects</li>
-                {/* Add more benefits */}
-            </ul>
-
-            <h2 className="text-2xl font-semibold mb-4">Community Engagement</h2>
-            <ul className="list-disc pl-6 mb-6">
-                <li className="mb-2">Interact with a supportive community of like-minded individuals</li>
-                <li className="mb-2">Receive valuable feedback and encouragement from peers</li>
-                <li className="mb-2">Participate in discussions and events centered around your interests</li>
-                {/* Add more benefits */}
-            </ul>
-
-            <h2 className="text-2xl font-semibold mb-4">Access to Resources</h2>
-            <ul className="list-disc pl-6 mb-6">
-                <li className="mb-2">Gain access to resources such as tutorials, templates, and tools</li>
-                <li className="mb-2">Receive guidance and mentorship from experienced creators</li>
-                <li className="mb-2">Stay updated on industry trends and best practices</li>
-                {/* Add more benefits */}
-            </ul>
-
-            <h2 className="text-2xl font-semibold mb-4">Recognition and Exposure</h2>
-            <ul className="list-disc pl-6 mb-6">
-                <li className="mb-2">Showcase your work to a global audience and gain recognition</li>
-                <li className="mb-2">Feature in promotional materials and campaigns</li>
-                <li className="mb-2">Build your portfolio and increase your credibility as a creator</li>
-                {/* Add more benefits */}
-            </ul>
-
-            <h2 className="text-2xl font-semibold mb-4">Supportive Community</h2>
-            <ul className="list-disc pl-6 mb-6">
-                <li className="mb-2">Join a community that values creativity, diversity, and inclusivity</li>
-                <li className="mb-2">Find encouragement and inspiration from fellow members</li>
-                <li className="mb-2">Collaborate on projects and share resources for mutual growth</li>
-                {/* Add more benefits */}
-            </ul>
-
-        </div>
     );
 }
 
 export default About;
 
 export const metadata = {
-    title: "About - Get Me A Chai",
-  }
+    title: "About - BOOSTR",
+}
    
