@@ -9,11 +9,10 @@ const Login = () => {
 
   useEffect(() => {
     document.title = "Login - BOOSTR" 
-    console.log(session)
     if (session) {
       router.push('/dashboard')
     }
-  }, [])
+  }, [session, router])
 
   return (
     <div className='min-h-screen bg-black text-white flex flex-col items-center justify-center py-20'>

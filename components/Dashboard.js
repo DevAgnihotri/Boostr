@@ -13,20 +13,27 @@ const Dashboard = () => {
     const [form, setform] = useState({})
 
     useEffect(() => {
-        console.log(session)
-
+        // redirect to login if there's no session
         if (!session) {
             router.push('/login')
+            return
         }
-        else {
-            getData()
-        }
-    }, [])
 
-    const getData = async () => {
-        let u = await fetchuser(session.user.name)
-        setform(u)
-    }
+        // fetch user data when session becomes available
+        let mounted = true
+        const getData = async () => {
+            try {
+                const u = await fetchuser(session.user.name)
+                if (mounted) setform(u)
+            } catch (err) {
+                console.error('Failed to fetch user data', err)
+            }
+        }
+
+        getData()
+
+        return () => { mounted = false }
+    }, [session, router])
 
     const handleChange = (e) => {
         setform({ ...form, [e.target.name]: e.target.value })

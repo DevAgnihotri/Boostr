@@ -29,13 +29,14 @@ export default function Home() {
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black">
         {/* Video Background */}
         <div className="absolute inset-0 w-full h-full overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black opacity-60 z-10"></div>
+          {/* overlay removed so hero video shows at full brightness; text retains textShadow for legibility */}
           <video 
-            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full w-auto h-auto object-cover opacity-70"
+            className="absolute inset-0 w-full h-full object-cover" 
             autoPlay
             muted
             loop
             playsInline
+            aria-hidden
           >
             <source src="/assets/videos/hero-video.mp4" type="video/mp4" />
             Your browser does not support the video tag.
@@ -43,7 +44,7 @@ export default function Home() {
         </div>
 
         {/* Hero Content */}
-        <div className="relative z-10 text-center px-6 md:px-12 max-w-6xl mx-auto">
+  <div className="relative z-30 text-center px-6 md:px-12 max-w-6xl mx-auto">
           <h1 className="text-8xl md:text-9xl lg:text-[14rem] font-thin text-white mb-6 tracking-[0.05em] leading-none" style={{textShadow: '0 0 40px rgba(0,0,0,0.9), 0 0 80px rgba(0,0,0,0.7)'}}>
             BOOSTR
           </h1>

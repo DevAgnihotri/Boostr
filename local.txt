@@ -1,0 +1,20 @@
+# MongoDB connection string (required for app to connect to the database)
+MONGO_URI=mongodb://localhost:27017/patreonclone
+
+# Base URL of your app (used in callbacks/redirects)
+NEXT_PUBLIC_URL=http://localhost:3000
+
+# NextAuth / OAuth (GitHub used in this project)
+GITHUB_ID=Ov23liqRjcThMH7lyK1W
+GITHUB_SECRET=63b74a1cbdd0f0726864d81bc13e96ab3cee5490
+
+# NextAuth optional secret (recommended for production)
+NEXTAUTH_SECRET=c3f1d2a9e6b47f8192a3d7e4c5b6f08a9d2e4f6b7c8a9e0f1d2c3b4a5e6f708
+NEXTAUTH_URL=http://localhost:3000
+
+# Optional Razorpay keys (if your server code uses a global key)
+# Note: this project stores per-user Razorpay secrets in the DB, but
+# some deployments keep a global key as well.
+RAZORPAY_KEY_ID=TEST-M231KB71OXZXN_25101
+RAZORPAY_KEY_SECRET=NzU4NzcyNDgtOTgzMy00ZWJmLTkzMmUtMzg2YjgwNGJiNTU4
+NEXT_PUBLIC_RAZORPAY_KEY_ID=rzp_test_examplepublickey
