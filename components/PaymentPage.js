@@ -21,39 +21,45 @@ const PaymentPage = ({ username }) => {
     const router = useRouter()
 
     useEffect(() => {
-        getData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+        const fetchAll = async () => {
+            try {
+                const u = await fetchuser(username)
+                setcurrentUser(u)
+                const dbpayments = await fetchpayments(username)
+                setPayments(dbpayments)
+            } catch (err) {
+                console.error('Failed to load user/payments', err)
+            }
+        }
+
+        fetchAll()
+    }, [username])
 
     useEffect(() => {
-        if(searchParams.get("paymentdone") == "true"){
-        toast('Thanks for your donation!', {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-            transition: Bounce,
+        const done = searchParams.get("paymentdone")
+        if (done === "true") {
+            toast('Thanks for your donation!', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
             });
+
+            // remove query param so the toast isn't shown on reload; give it a moment to be seen
+            setTimeout(() => {
+                router.replace(`/${username}`)
+            }, 800)
         }
-        router.push(`/${username}`)
-     
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [searchParams, router, username])
     
 
     const handleChange = (e) => {
         setPaymentform({ ...paymentform, [e.target.name]: e.target.value })
-    }
-
-    const getData = async () => {
-        let u = await fetchuser(username)
-        setcurrentUser(u)
-        let dbpayments = await fetchpayments(username)
-        setPayments(dbpayments) 
     }
 
 
@@ -106,9 +112,9 @@ const PaymentPage = ({ username }) => {
 
             <div className='min-h-screen bg-black text-white'>
                 <div className='cover w-full relative'>
-                    <Image className='object-cover w-full h-48 md:h-[350px]' src={currentUser.coverpic || '/default-cover.jpg'} alt="cover" width={1200} height={350} />
+                    <Image unoptimized className='object-cover w-full h-48 md:h-[350px]' src={currentUser.coverpic || '/man.gif'} alt="cover" width={1200} height={350} />
                     <div className='absolute -bottom-20 right-[33%] md:right-[46%] border-red-600 overflow-hidden border-2 rounded-full size-36'>
-                        <Image className='rounded-full object-cover size-36' width={128} height={128} src={currentUser.profilepic || '/avatar.gif'} alt="profile" />
+                        <Image unoptimized className='rounded-full object-cover size-36' width={128} height={128} src={currentUser.profilepic || '/avatar.gif'} alt="profile" />
                     </div>
                 </div>
                 <div className="info flex justify-center items-center my-24 mb-32 flex-col gap-2">
@@ -122,6 +128,38 @@ const PaymentPage = ({ username }) => {
                         {payments.length} Supporters · <span className='text-red-600'>₹{payments.reduce((a, b) => a + b.amount, 0)}</span> raised
                     </div>
 
+                    {/* Videos section */}
+                    {currentUser.videos && currentUser.videos.length > 0 && (
+                        <div className='w-full max-w-6xl mt-12'>
+                            <h3 className='text-2xl font-light mb-6 border-l-4 border-red-600 pl-4'>Videos</h3>
+                            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6'>
+                                {currentUser.videos.map((url, i) => {
+                                    // extract youtube id
+                                    const getYouTubeID = (u) => {
+                                        try {
+                                            const parsed = new URL(u)
+                                            if (parsed.hostname.includes('youtu.be')) return parsed.pathname.slice(1)
+                                            if (parsed.hostname.includes('youtube.com')) return parsed.searchParams.get('v')
+                                        } catch (err) {
+                                            return null
+                                        }
+                                        return null
+                                    }
+                                    const id = getYouTubeID(url)
+                                    if (!id) return null
+                                    const embed = `https://www.youtube.com/embed/${id}`
+                                    return (
+                                        <div key={i} className='bg-black border border-red-950 rounded-sm overflow-hidden'>
+                                            <div className='w-full h-48 md:h-56 bg-black'>
+                                                <iframe loading='lazy' className='w-full h-full' src={embed} title={`video-${i}`} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                                            </div>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    )}
+
                     <div className="payment flex gap-6 w-[90%] max-w-6xl mt-11 flex-col md:flex-row">
                         <div className="supporters w-full md:w-1/2 bg-black border border-red-950 rounded-sm text-white p-8">
                             <h2 className='text-2xl font-light tracking-wide mb-6 border-l-4 border-red-600 pl-4'>Top Supporters</h2>
@@ -129,7 +167,7 @@ const PaymentPage = ({ username }) => {
                                 {payments.length == 0 && <li className='font-extralight text-slate-400'>No supporters yet</li>}
                                 {payments.slice(0, 10).map((p, i) => {
                                     return <li key={i} className='flex gap-3 items-start border-l-2 border-red-950 pl-4 py-2 hover:border-red-600 transition-all'>
-                                        <Image width={33} height={33} src="/avatar.gif" alt="user avatar" className='rounded-full' />
+                                        <Image unoptimized width={33} height={33} src="/avatar.gif" alt="user avatar" className='rounded-full' />
                                         <span className='font-extralight text-sm'>
                                             <span className='text-red-600 font-light'>{p.name}</span> donated <span className='font-light text-white'>₹{p.amount}</span>
                                             <br />

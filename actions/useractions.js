@@ -36,7 +36,12 @@ export const initiate = async (amount, to_username, paymentform) => {
 export const fetchuser = async (username) => {
     await connectDb()
     let u = await User.findOne({ username: username })
-    let user = u.toObject({ flattenObjectIds: true })
+    if (!u) return null
+    const user = u.toObject()
+    // convert ObjectId and Dates to plain strings for client-safe serialization
+    if (user._id) user._id = String(user._id)
+    if (user.createdAt) user.createdAt = user.createdAt.toISOString()
+    if (user.updatedAt) user.updatedAt = user.updatedAt.toISOString()
     return user
 }
 
@@ -44,12 +49,46 @@ export const fetchpayments = async (username) => {
     await connectDb()
     // find all payments sorted by decreasing order of amount and flatten object ids
     let p = await Payment.find({ to_user: username, done:true }).sort({ amount: -1 }).limit(10).lean()
+    // convert ObjectIds and Dates to plain strings
+    p = p.map(item => ({
+        ...item,
+        _id: item._id ? String(item._id) : item._id,
+        createdAt: item.createdAt ? new Date(item.createdAt).toISOString() : item.createdAt,
+        updatedAt: item.updatedAt ? new Date(item.updatedAt).toISOString() : item.updatedAt
+    }))
     return p
 }
 
 export const updateProfile = async (data, oldusername) => {
     await connectDb()
-    let ndata = Object.fromEntries(data)
+    // `data` may be either a FormData (from a form POST) or a plain object (when called programmatically).
+    let ndata
+    try {
+        if (data == null) ndata = {}
+        else if (typeof data === 'object' && !(data instanceof FormData)) {
+            // plain object already
+            ndata = data
+        } else {
+            // FormData or iterable entries
+            ndata = Object.fromEntries(data)
+        }
+    } catch (err) {
+        // fallback: ensure ndata is an object
+        ndata = {}
+    }
+
+    // If videos field is provided as a comma-separated string, convert to array
+    if (ndata.videos && typeof ndata.videos === 'string') {
+        // Accept comma, whitespace (space/newline) or mixed separators
+        ndata.videos = ndata.videos.split(/[\s,]+/).map(s => s.trim()).filter(Boolean)
+    }
+
+    // Debug: log incoming videos data type and value (helps troubleshooting)
+    try {
+        console.log('updateProfile: oldusername=', oldusername, 'ndata.videos=', ndata.videos)
+    } catch (err) {
+        // ignore logging errors
+    }
 
     // If the username is being updated, check if username is available
     if (oldusername !== ndata.username) {
@@ -57,7 +96,9 @@ export const updateProfile = async (data, oldusername) => {
         if (u) {
             return { error: "Username already exists" }
         }   
-        await User.updateOne({email: ndata.email}, ndata)
+    // update the user record using the old username as the selector
+    const res = await User.updateOne({ username: oldusername }, ndata)
+    console.log('updateProfile: updateOne result for username change=', res)
         // Now update all the usernames in the Payments table 
         await Payment.updateMany({to_user: oldusername}, {to_user: ndata.username})
         
@@ -65,9 +106,12 @@ export const updateProfile = async (data, oldusername) => {
     else{
 
         
-        await User.updateOne({email: ndata.email}, ndata)
+        // update the user record using the old username as the selector
+        const res = await User.updateOne({ username: oldusername }, ndata)
+        console.log('updateProfile: updateOne result=', res)
     }
 
+    return { success: true }
 
 }
 
