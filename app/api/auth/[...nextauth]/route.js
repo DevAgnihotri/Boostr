@@ -64,7 +64,11 @@ export const authoptions =  NextAuth({
       
       async session({ session, user, token }) {
         try {
-          const dbUser = await User.findOne({ email: session.user.email })
+          // Ensure DB is connected in serverless envs
+          await connectDb()
+          const userEmail = session?.user?.email
+          if (!userEmail) return session
+          const dbUser = await User.findOne({ email: userEmail })
           if (dbUser) {
             session.user.name = dbUser.username
           } else if (session.user?.email) {
