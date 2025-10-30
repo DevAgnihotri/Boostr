@@ -25,7 +25,7 @@ const Login = () => {
 
       <div className="flex flex-col gap-4 items-center">
 
-        <button
+        <button onClick={() => { signIn("google") }}
           className="flex items-center w-80 bg-black text-white border border-red-950 rounded-sm px-8 py-3 font-extralight tracking-wide hover:border-red-600 hover:bg-red-950/10 transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-red-600">
           <svg className="h-5 w-5 mr-3 opacity-80" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"
             viewBox="-0.5 0 48 48" version="1.1">
