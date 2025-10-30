@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { validatePaymentVerification } from "razorpay/dist/utils/razorpay-utils";
 import Payment from "@/models/Payment";
-import Razorpay from "razorpay";
 import connectDb from "@/db/connectDb";
 import User from "@/models/User";
 
@@ -17,20 +16,26 @@ export const POST = async (req) => {
     }
 
     // fetch the secret of the user who is getting the payment 
-    let user = await User.findOne({username: p.to_user})
+    let user = await User.findOne({ username: p.to_user })
+    if (!user) {
+        return NextResponse.json({ success: false, message: 'Recipient user not found' }, { status: 404 })
+    }
     const secret = user.razorpaysecret
 
     // Verify the payment
-    let xx = validatePaymentVerification({"order_id": body.razorpay_order_id, "payment_id": body.razorpay_payment_id}, body.razorpay_signature, secret)
+    try {
+        const verified = validatePaymentVerification({ order_id: body.razorpay_order_id, payment_id: body.razorpay_payment_id }, body.razorpay_signature, secret)
 
-    if(xx){
-        // Update the payment status
-        const updatedPayment = await Payment.findOneAndUpdate({oid: body.razorpay_order_id}, {done: "true"}, {new: true})
-        return NextResponse.redirect(`${process.env.NEXT_PUBLIC_URL}/${updatedPayment.to_user}?paymentdone=true`)  
-    }
+        if (verified) {
+            // Update the payment status (boolean true)
+            const updatedPayment = await Payment.findOneAndUpdate({ oid: body.razorpay_order_id }, { done: true }, { new: true })
+            return NextResponse.redirect(`${process.env.NEXT_PUBLIC_URL}/${updatedPayment.to_user}?paymentdone=true`)
+        }
 
-    else{
-        return NextResponse.json({success: false, message:"Payment Verification Failed"})
+        return NextResponse.json({ success: false, message: 'Payment Verification Failed' }, { status: 400 })
+    } catch (err) {
+        console.error('Razorpay verification error:', err)
+        return NextResponse.json({ success: false, message: 'Verification error' }, { status: 500 })
     }
 
 }
