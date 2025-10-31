@@ -31,6 +31,9 @@ const Navbar = () => {
             <Link href="/about" className='text-slate-400 hover:text-white font-medium uppercase text-sm tracking-widest transition-colors duration-300'>
               About
             </Link>
+            <Link href="/creators" className='text-slate-400 hover:text-white font-medium uppercase text-sm tracking-widest transition-colors duration-300'>
+              Creators
+            </Link>
           </div>
 
           {/* Auth Section - Luxury Minimal */}
