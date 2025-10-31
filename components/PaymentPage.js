@@ -128,37 +128,39 @@ const PaymentPage = ({ username }) => {
                         {payments.length} Supporters · <span className='text-red-600'>₹{payments.reduce((a, b) => a + b.amount, 0)}</span> raised
                     </div>
 
-                    {/* Videos section */}
-                    {currentUser.videos && currentUser.videos.length > 0 && (
-                        <div className='w-full max-w-6xl mt-12'>
-                            <h3 className='text-2xl font-light mb-6 border-l-4 border-red-600 pl-4'>Videos</h3>
-                            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6'>
-                                {currentUser.videos.map((url, i) => {
-                                    // extract youtube id
-                                    const getYouTubeID = (u) => {
-                                        try {
-                                            const parsed = new URL(u)
-                                            if (parsed.hostname.includes('youtu.be')) return parsed.pathname.slice(1)
-                                            if (parsed.hostname.includes('youtube.com')) return parsed.searchParams.get('v')
-                                        } catch (err) {
-                                            return null
-                                        }
-                                        return null
-                                    }
-                                    const id = getYouTubeID(url)
-                                    if (!id) return null
-                                    const embed = `https://www.youtube.com/embed/${id}`
-                                    return (
-                                        <div key={i} className='bg-black border border-red-950 rounded-sm overflow-hidden'>
-                                            <div className='w-full h-48 md:h-56 bg-black'>
-                                                <iframe loading='lazy' className='w-full h-full' src={embed} title={`video-${i}`} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                    {/* Videos section: only show if there are valid YouTube IDs */}
+                    {(() => {
+                        if (!currentUser.videos || !Array.isArray(currentUser.videos)) return null
+                        const getYouTubeID = (u) => {
+                            try {
+                                const parsed = new URL(u)
+                                if (parsed.hostname.includes('youtu.be')) return parsed.pathname.slice(1)
+                                if (parsed.hostname.includes('youtube.com')) return parsed.searchParams.get('v')
+                            } catch (err) {
+                                return null
+                            }
+                            return null
+                        }
+                        const validVideos = currentUser.videos.map(url => getYouTubeID(url)).filter(Boolean)
+                        if (validVideos.length === 0) return null
+                        return (
+                            <div className='w-full max-w-6xl mt-12'>
+                                <h3 className='text-2xl font-light mb-6 border-l-4 border-red-600 pl-4'>Videos</h3>
+                                <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6'>
+                                    {validVideos.map((id, i) => {
+                                        const embed = `https://www.youtube.com/embed/${id}`
+                                        return (
+                                            <div key={i} className='bg-black border border-red-950 rounded-sm overflow-hidden'>
+                                                <div className='w-full h-48 md:h-56 bg-black'>
+                                                    <iframe loading='lazy' className='w-full h-full' src={embed} title={`video-${i}`} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                                                </div>
                                             </div>
-                                        </div>
-                                    )
-                                })}
+                                        )
+                                    })}
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )
+                    })()}
 
                     <div className="payment flex gap-6 w-[90%] max-w-6xl mt-11 flex-col md:flex-row">
                         <div className="supporters w-full md:w-1/2 bg-black border border-red-950 rounded-sm text-white p-8">
