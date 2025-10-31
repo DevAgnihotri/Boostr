@@ -9,26 +9,52 @@ export const initiate = async (amount, to_username, paymentform) => {
     await connectDb()
     // fetch the secret of the user who is getting the payment 
     let user = await User.findOne({username: to_username})
-    // For PhonePe flow: create a local order record and return a simulated payment URL.
-    // This avoids calling external APIs and lets the frontend redirect to a server route
-    // that simulates PhonePe behavior for testing.
+    // Ensure recipient has configured Razorpay
+    if (!user || !user.razorpayid || !user.razorpaysecret) {
+        return { error: 'Recipient has not configured Razorpay' }
+    }
 
-    const orderId = `phonepe_${Date.now()}`
+    const key_id = user.razorpayid
+    const key_secret = user.razorpaysecret
 
-    // amount is expected in paise from the client (same as previous behavior)
-    const order = {
-        id: orderId,
+    // amount is expected in paise from the client
+    const orderBody = {
         amount: Number.parseInt(amount),
         currency: 'INR',
-        to_user: to_username,
+        receipt: `rcpt_${Date.now()}`,
+        payment_capture: 1
     }
+
+    // Create order on Razorpay using recipient's credentials
+    const auth = Buffer.from(`${key_id}:${key_secret}`).toString('base64')
+    let resp
+    try {
+        resp = await fetch('https://api.razorpay.com/v1/orders', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Basic ${auth}`
+            },
+            body: JSON.stringify(orderBody)
+        })
+    } catch (err) {
+        console.error('Razorpay order creation failed', err)
+        return { error: 'Failed to reach Razorpay' }
+    }
+
+    if (!resp.ok) {
+        const text = await resp.text()
+        console.error('Razorpay order creation error', resp.status, text)
+        return { error: 'Failed to create Razorpay order', details: text }
+    }
+
+    const order = await resp.json()
 
     // create a payment object which shows a pending payment in the database
     await Payment.create({ oid: order.id, amount: order.amount / 100, to_user: to_username, name: paymentform.name, message: paymentform.message, done: false })
 
-    // Return a simulated checkout URL that points to our new /api/phonepe route
-    const paymentUrl = `${process.env.NEXT_PUBLIC_URL}/api/phonepe?orderId=${order.id}`
-    return { id: order.id, paymentUrl }
+    // Return order info required by client to open Razorpay checkout
+    return { orderId: order.id, amount: order.amount, currency: order.currency, key_id }
 
 }
 

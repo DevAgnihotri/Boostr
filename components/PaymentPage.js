@@ -74,7 +74,7 @@ const PaymentPage = ({ username }) => {
             return
         }
 
-        // Create a PhonePe-style order on the server and get a payment URL
+        // Create a Razorpay order on the server and open Razorpay checkout
         try {
             const a = await initiate(amount, username, paymentform)
             if (!a) {
@@ -82,14 +82,54 @@ const PaymentPage = ({ username }) => {
                 return
             }
 
-            const paymentUrl = a.paymentUrl || a.url
-            if (!paymentUrl) {
-                toast.error(a.message || 'No payment URL returned')
+            if (a.error) {
+                toast.error(a.error || 'Payment initiation error')
                 return
             }
 
-            // Redirect to simulated PhonePe checkout
-            window.location.href = paymentUrl
+            // Build Razorpay checkout options
+            const options = {
+                key: a.key_id || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+                amount: a.amount,
+                currency: a.currency || 'INR',
+                name: currentUser && (currentUser.name || `@${username}`),
+                description: paymentform.message,
+                order_id: a.orderId,
+                handler: function (response) {
+                    // create a form and POST to /api/razorpay so server can verify and redirect
+                    try {
+                        const form = document.createElement('form')
+                        form.method = 'POST'
+                        form.action = '/api/razorpay'
+                        const fields = {
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature
+                        }
+                        for (const k in fields) {
+                            const input = document.createElement('input')
+                            input.type = 'hidden'
+                            input.name = k
+                            input.value = fields[k]
+                            form.appendChild(input)
+                        }
+                        document.body.appendChild(form)
+                        form.submit()
+                    } catch (err) {
+                        console.error('Failed to submit verification form', err)
+                        toast.error('Payment verification failed')
+                    }
+                }
+            }
+
+            // Ensure Razorpay script is available
+            if (!window.Razorpay) {
+                toast.error('Razorpay script not loaded')
+                return
+            }
+
+            const rzp = new window.Razorpay(options)
+            rzp.open()
         } catch (err) {
             console.error('Payment initiation failed', err)
             toast.error('Payment initiation failed')
@@ -109,6 +149,9 @@ const PaymentPage = ({ username }) => {
                 draggable
                 pauseOnHover
                 theme="dark" />
+
+            {/* Razorpay checkout script */}
+            <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="afterInteractive" />
 
             <div className='min-h-screen bg-black text-white'>
                 <div className='cover w-full relative'>
@@ -182,23 +225,27 @@ const PaymentPage = ({ username }) => {
 
                         <div className="makePayment w-full md:w-1/2 bg-black border border-red-950 rounded-sm text-white p-8">
                             <h2 className='text-2xl font-light tracking-wide mb-6 border-l-4 border-red-600 pl-4'>Make a Payment</h2>
+                            {/* Disable payment UI when recipient hasn't provided Razorpay details */}
+                            {(!(currentUser && currentUser.razorpayid && currentUser.razorpaysecret)) && (
+                                <div className='mb-4 text-sm text-yellow-400'>Payment details not complete — creator has not configured Razorpay. Payments are disabled.</div>
+                            )}
                             <div className='flex gap-4 flex-col'>
                                 <div>
-                                    <input onChange={handleChange} value={paymentform.name} name='name' type="text" className='w-full p-3 rounded-sm bg-black border border-red-950 font-extralight focus:ring-1 focus:ring-red-600 focus:border-red-600 hover:border-red-600 transition-all' placeholder='Your Name' />
+                                    <input onChange={handleChange} value={paymentform.name} name='name' type='text' className='w-full p-3 rounded-sm bg-black border border-red-950 font-extralight focus:ring-1 focus:ring-red-600 focus:border-red-600 hover:border-red-600 transition-all' placeholder='Your Name' disabled={!(currentUser && currentUser.razorpayid && currentUser.razorpaysecret)} title={!currentUser || !(currentUser.razorpayid && currentUser.razorpaysecret) ? 'Payments are disabled for this creator' : ''} />
                                 </div>
-                                <input onChange={handleChange} value={paymentform.message} name='message' type="text" className='w-full p-3 rounded-sm bg-black border border-red-950 font-extralight focus:ring-1 focus:ring-red-600 focus:border-red-600 hover:border-red-600 transition-all' placeholder='Your Message' />
+                                <input onChange={handleChange} value={paymentform.message} name='message' type='text' className='w-full p-3 rounded-sm bg-black border border-red-950 font-extralight focus:ring-1 focus:ring-red-600 focus:border-red-600 hover:border-red-600 transition-all' placeholder='Your Message' disabled={!(currentUser && currentUser.razorpayid && currentUser.razorpaysecret)} title={!currentUser || !(currentUser.razorpayid && currentUser.razorpaysecret) ? 'Payments are disabled for this creator' : ''} />
 
-                                <input onChange={handleChange} value={paymentform.amount} name="amount" type="text" className='w-full p-3 rounded-sm bg-black border border-red-950 font-extralight focus:ring-1 focus:ring-red-600 focus:border-red-600 hover:border-red-600 transition-all' placeholder='Amount (₹)' />
+                                <input onChange={handleChange} value={paymentform.amount} name="amount" type="text" className='w-full p-3 rounded-sm bg-black border border-red-950 font-extralight focus:ring-1 focus:ring-red-600 focus:border-red-600 hover:border-red-600 transition-all' placeholder='Amount (₹)' disabled={!(currentUser && currentUser.razorpayid && currentUser.razorpaysecret)} title={!currentUser || !(currentUser.razorpayid && currentUser.razorpaysecret) ? 'Payments are disabled for this creator' : ''} />
 
-                                <button onClick={() => pay(Number.parseInt(paymentform.amount) * 100)} type="button" className="w-full text-white bg-red-600 hover:bg-red-700 focus:ring-1 focus:ring-red-600 font-light tracking-wide rounded-sm px-5 py-3 transition-all disabled:bg-red-950 disabled:cursor-not-allowed disabled:opacity-50" disabled={paymentform.name?.length < 3 || paymentform.message?.length < 4 || paymentform.amount?.length<1}>
+                                <button onClick={() => pay(Number.parseInt(paymentform.amount) * 100)} type="button" className="w-full text-white bg-red-600 hover:bg-red-700 focus:ring-1 focus:ring-red-600 font-light tracking-wide rounded-sm px-5 py-3 transition-all disabled:bg-red-950 disabled:cursor-not-allowed disabled:opacity-50" disabled={!((currentUser && currentUser.razorpayid && currentUser.razorpaysecret) && paymentform.name?.length >= 3 && paymentform.message?.length >= 4 && paymentform.amount?.length>0)}>
                                     Pay Now
                                 </button>
                             </div>
 
                             <div className='flex flex-col md:flex-row gap-3 mt-6'>
-                                <button className='bg-black border border-red-950 p-3 rounded-sm font-extralight hover:border-red-600 hover:bg-red-950/10 transition-all' onClick={() => pay(1000)}>₹10</button>
-                                <button className='bg-black border border-red-950 p-3 rounded-sm font-extralight hover:border-red-600 hover:bg-red-950/10 transition-all' onClick={() => pay(2000)}>₹20</button>
-                                <button className='bg-black border border-red-950 p-3 rounded-sm font-extralight hover:border-red-600 hover:bg-red-950/10 transition-all' onClick={() => pay(3000)}>₹30</button>
+                                <button className='bg-black border border-red-950 p-3 rounded-sm font-extralight hover:border-red-600 hover:bg-red-950/10 transition-all' onClick={() => pay(1000)} disabled={!(currentUser && currentUser.razorpayid && currentUser.razorpaysecret)}>₹10</button>
+                                <button className='bg-black border border-red-950 p-3 rounded-sm font-extralight hover:border-red-600 hover:bg-red-950/10 transition-all' onClick={() => pay(2000)} disabled={!(currentUser && currentUser.razorpayid && currentUser.razorpaysecret)}>₹20</button>
+                                <button className='bg-black border border-red-950 p-3 rounded-sm font-extralight hover:border-red-600 hover:bg-red-950/10 transition-all' onClick={() => pay(3000)} disabled={!(currentUser && currentUser.razorpayid && currentUser.razorpaysecret)}>₹30</button>
                             </div>
                         </div>
                     </div>
