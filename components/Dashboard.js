@@ -127,7 +127,7 @@ const Dashboard = () => {
 
                         <div className="my-6">
                             <label htmlFor="email" className="block mb-2 font-light tracking-wide text-slate-400">Email</label>
-                            <input value={form.email ? form.email : ""} onChange={handleChange} type="email" name='email' id="email" className="block w-full p-3 bg-black text-white border border-red-950 rounded-sm font-extralight focus:ring-1 focus:ring-red-600 focus:border-red-600 hover:border-red-600 transition-all" />
+                            <input value={form.email ? form.email : ""} disabled aria-disabled="true" readOnly type="email" name='email' id="email" className="block w-full p-3 bg-black text-white border border-red-950 rounded-sm font-extralight opacity-60 cursor-not-allowed" />
                         </div>
 
                         <div className='my-6'>
