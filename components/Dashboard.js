@@ -25,7 +25,7 @@ const Dashboard = () => {
         const getData = async () => {
             try {
                 const u = await fetchuser(session.user.name)
-                if (mounted) setform(u)
+                if (mounted) setform(u || {})
             } catch (err) {
                 console.error('Failed to fetch user data', err)
             }
@@ -74,6 +74,16 @@ const Dashboard = () => {
                     const newUsername = formData.get('username') || session.user.name
                     const u = await fetchuser(newUsername)
                     if (u) setform(u)
+
+                    // If username changed, navigate to the updated public page so it won't 404
+                    try {
+                        if (newUsername && session?.user?.name && newUsername !== session.user.name) {
+                            // replace current route with the new public profile route
+                            router.replace(`/${newUsername}`)
+                        }
+                    } catch (err) {
+                        console.error('Failed to redirect to new username page', err)
+                    }
                 return
             }
 

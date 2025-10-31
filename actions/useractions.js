@@ -91,24 +91,35 @@ export const updateProfile = async (data, oldusername) => {
     }
 
     // If the username is being updated, check if username is available
-    if (oldusername !== ndata.username) {
+    // Determine selector for the existing user. Prefer oldusername; fall back to email if oldusername missing
+    let selector = null
+    if (oldusername) selector = { username: oldusername }
+    else if (ndata.email) selector = { email: ndata.email }
+
+    if (!selector) {
+        return { error: 'Missing selector to identify user (oldusername or email required)' }
+    }
+
+    // If the username is being updated, check if username is available
+    if (ndata.username && selector.username !== ndata.username) {
         let u = await User.findOne({ username: ndata.username })
         if (u) {
             return { error: "Username already exists" }
-        }   
-    // update the user record using the old username as the selector
-    const res = await User.updateOne({ username: oldusername }, ndata)
-    console.log('updateProfile: updateOne result for username change=', res)
-        // Now update all the usernames in the Payments table 
-        await Payment.updateMany({to_user: oldusername}, {to_user: ndata.username})
-        
+        }
     }
-    else{
 
-        
-        // update the user record using the old username as the selector
-        const res = await User.updateOne({ username: oldusername }, ndata)
-        console.log('updateProfile: updateOne result=', res)
+    // update the user record using the selector
+    const res = await User.updateOne(selector, ndata)
+    console.log('updateProfile: updateOne result=', res)
+
+    // If username changed, update payments to point to the new username
+    try {
+        const prevUsername = selector.username
+        if (prevUsername && ndata.username && prevUsername !== ndata.username) {
+            await Payment.updateMany({ to_user: prevUsername }, { to_user: ndata.username })
+        }
+    } catch (err) {
+        console.error('updateProfile: failed to update payments', err)
     }
 
     return { success: true }
