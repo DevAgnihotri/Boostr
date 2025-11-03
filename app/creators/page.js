@@ -2,12 +2,19 @@ import connectDb from '@/db/connectDb'
 import User from '@/models/User'
 import Image from 'next/image'
 import Link from 'next/link'
+import { unstable_noStore as noStore } from 'next/cache'
+
+// Force dynamic rendering in production so new creators appear immediately
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export const metadata = {
   title: 'Creators - BOOSTR',
 }
 
 export default async function CreatorsPage() {
+  // Disable caching of this route
+  noStore()
   // server component: fetch creators from DB
   await connectDb()
   let users = []
