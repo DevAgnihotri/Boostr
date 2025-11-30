@@ -3,12 +3,15 @@ import React, { useState } from 'react'
 import { useSession, signIn, signOut } from "next-auth/react"
 import Link from 'next/link'
 import Image from 'next/image'
+import ChatBot from './ChatBot'
 
 const Navbar = () => {
   const { data: session } = useSession()
   const [showdropdown, setShowdropdown] = useState(false)
+  const [isChatOpen, setIsChatOpen] = useState(false)
 
   return (
+    <>
     <nav className='fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-90 backdrop-blur-xl border-b border-red-900 border-opacity-30'>
       <div className='max-w-7xl mx-auto px-6 md:px-8'>
         <div className='flex justify-between items-center h-20'>
@@ -34,6 +37,20 @@ const Navbar = () => {
             <Link href="/creators" className='text-slate-400 hover:text-white font-medium uppercase text-sm tracking-widest transition-colors duration-300'>
               Creators
             </Link>
+            
+            {/* Mr. PayFix Chat Button - Only for logged in users */}
+            {session && (
+              <button 
+                onClick={() => setIsChatOpen(true)}
+                className='flex items-center gap-2 text-slate-400 hover:text-white font-medium uppercase text-sm tracking-widest transition-colors duration-300 group'
+                title="Mr. PayFix - Razorpay Help"
+              >
+                <svg className="w-5 h-5 text-red-500 group-hover:text-red-400 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                </svg>
+                <span className='hidden lg:inline'>PayFix</span>
+              </button>
+            )}
           </div>
 
           {/* Auth Section - Luxury Minimal */}
@@ -111,10 +128,27 @@ const Navbar = () => {
                 </button>
               </Link>
             )}
+
+            {/* Mobile Mr. PayFix Button - Only for logged in users */}
+            {session && (
+              <button 
+                onClick={() => setIsChatOpen(true)}
+                className='md:hidden w-10 h-10 flex items-center justify-center bg-red-900 bg-opacity-20 border border-red-900 border-opacity-30 hover:bg-red-600 transition-all duration-300'
+                title="Mr. PayFix - Razorpay Help"
+              >
+                <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                </svg>
+              </button>
+            )}
           </div>
         </div>
       </div>
     </nav>
+    
+    {/* Mr. PayFix ChatBot - outside nav for proper centering */}
+    <ChatBot isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+    </>
   )
 }
 
