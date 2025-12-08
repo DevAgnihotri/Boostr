@@ -412,40 +412,6 @@ BOOSTR follows a **luxury minimalist** design approach:
 
 <br/>
 
-## 🚀 Deployment
-
-### Netlify (Recommended)
-
-1. Fork/Clone this repository
-2. Connect to Netlify
-3. Configure build settings:
-   - **Build command:** `npm run build`
-   - **Publish directory:** `.next`
-4. Add environment variables in Netlify dashboard
-5. Deploy! 🎉
-
-The `netlify.toml` is pre-configured for optimal Next.js deployment.
-
-<br/>
-
-## 🤝 Contributing
-
-Contributions make the open-source community amazing! Any contributions you make are **greatly appreciated**.
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-<br/>
-
-## 📄 License
-
-Distributed under the MIT License. See `LICENSE` for more information.
-
-<br/>
-
 ## 📬 Contact
 
 <div align="center">
@@ -456,7 +422,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 <br/>
 
-## 🙏 Acknowledgments
+## 🙏 Tech Behind
 
 - [Next.js](https://nextjs.org/) - The React Framework
 - [Razorpay](https://razorpay.com/) - Payment Gateway
@@ -471,9 +437,5 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <div align="center">
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12&height=100&section=footer" width="100%"/>
-
-**⭐ Star this repo if you found it helpful!**
-
-Made with ❤️ and ☕ by [DevAgnihotri](https://github.com/DevAgnihotri)
 
 </div>
