@@ -1,4 +1,5 @@
 "use client"
+
 import React, { useEffect, useState } from 'react'
 import { useSession, signIn, signOut } from "next-auth/react"
 import { useRouter } from 'next/navigation'
@@ -11,7 +12,7 @@ const Dashboard = () => {
     const { data: session, update } = useSession()
     const router = useRouter()
     const [form, setform] = useState({})
-    const [videosText, setVideosText] = React.useState('')
+    const [videosText, setVideosText] = useState('')
 
     useEffect(() => {
         // redirect to login if there's no session

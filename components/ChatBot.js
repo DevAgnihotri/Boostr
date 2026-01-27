@@ -10,9 +10,10 @@ const ChatBot = ({ isOpen, onClose }) => {
   ])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const messagesEndRef = useRef(null)
-  const inputRef = useRef(null)
+  const messagesEndRef = useRef(null) // for scroll  till last message
+  const inputRef = useRef(null) //focus on input at open
 
+  // scroll when a new message comes
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }
@@ -94,6 +95,7 @@ const ChatBot = ({ isOpen, onClose }) => {
               <p className="text-slate-400 text-xs uppercase tracking-widest">Razorpay Support</p>
             </div>
           </div>
+          {/* close button */}
           <button 
             onClick={onClose}
             className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-white hover:bg-red-900 hover:bg-opacity-30 transition-all duration-300"

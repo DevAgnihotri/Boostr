@@ -51,7 +51,8 @@ const Login = () => {
           <span>Continue with Google</span>
         </button>
 
-        <button
+        {/**
+         <button
           className="flex items-center w-80 bg-black text-white border border-red-950 rounded-sm px-8 py-3 font-extralight tracking-wide hover:border-red-600 hover:bg-red-950/10 transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-red-600">
           <svg className="h-5 w-5 mr-3 opacity-80" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"
             viewBox="0 -2 44 44" version="1.1">
@@ -66,7 +67,9 @@ const Login = () => {
           </svg> 
           <span>Continue with LinkedIn</span>
         </button>
+        */}
 
+        {/**
         <button
           className="flex items-center w-80 bg-black text-white border border-red-950 rounded-sm px-8 py-3 font-extralight tracking-wide hover:border-red-600 hover:bg-red-950/10 transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-red-600">
           <svg className="h-5 w-5 mr-3 opacity-80" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"
@@ -82,7 +85,9 @@ const Login = () => {
           </svg>
           <span>Continue with Twitter</span>
         </button>
+        */}
 
+        {/**
         <button
           className="flex items-center w-80 bg-black text-white border border-red-950 rounded-sm px-8 py-3 font-extralight tracking-wide hover:border-red-600 hover:bg-red-950/10 transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-red-600">
           <svg className="h-5 w-5 mr-3 opacity-80" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"
@@ -98,6 +103,7 @@ const Login = () => {
           </svg>
           <span>Continue with Facebook</span>
         </button>
+        */}
 
         <button onClick={() => { signIn("github") }}
           className="flex items-center w-80 bg-black text-white border border-red-950 rounded-sm px-8 py-3 font-extralight tracking-wide hover:border-red-600 hover:bg-red-950/10 transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-red-600">
@@ -119,6 +125,7 @@ const Login = () => {
           <span>Continue with Github</span>
         </button>
 
+        {/**
         <button
           className="flex items-center w-80 bg-black text-white border border-red-950 rounded-sm px-8 py-3 font-extralight tracking-wide hover:border-red-600 hover:bg-red-950/10 transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-red-600">
           <svg className="h-5 w-5 mr-3 opacity-80" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"
@@ -136,6 +143,7 @@ const Login = () => {
           </svg>
           <span>Continue with Apple</span>
         </button>
+        */}
 
       </div>
     </div>
