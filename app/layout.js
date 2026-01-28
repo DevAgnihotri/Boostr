@@ -14,10 +14,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="bg-slate-950 text-white">
+      <body className="bg-black text-white">
         <SessionWrapper> 
           <Navbar />
-          <div className="pt-20 min-h-screen bg-slate-950 text-white">
+          <div className="pt-20 min-h-screen bg-black text-white">
             {children}
           </div>
           <Footer />

@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
 
-
-
 const SYSTEM_PROMPT = `You are Mr. PayFix, a friendly and helpful Razorpay support assistant for Boostr - a platform where creators receive support from their fans.
 
 ABOUT BOOSTR:

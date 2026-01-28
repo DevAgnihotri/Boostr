@@ -19,7 +19,7 @@ export default async function CreatorsPage() {
   await connectDb()
   let users = []
   try {
-    users = await User.find({}).sort({ createdAt: -1 }).limit(200).lean()
+    users = await User.find({}).sort({ createdAt: -1 }).limit(20).lean()
   } catch (err) {
     // fail silently and render empty list
     console.error('Failed to load creators', err)

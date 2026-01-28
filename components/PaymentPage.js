@@ -160,7 +160,7 @@ const PaymentPage = ({ username }) => {
                         <Image unoptimized className='rounded-full object-cover size-36' width={128} height={128} src={currentUser.profilepic || '/avatar.gif'} alt="profile" />
                     </div>
                 </div>
-                <div className="info flex justify-center items-center my-24 mb-32 flex-col gap-2">
+                <div className="info flex justify-center items-center my-24 mb-12 flex-col gap-2">
                     <div className='font-thin text-4xl tracking-wide'>
                         @{username}
                     </div>
